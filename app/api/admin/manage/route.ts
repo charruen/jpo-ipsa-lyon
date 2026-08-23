@@ -4,7 +4,7 @@ import { getSupabaseAdmin } from '@/lib/supabaseAdmin'
 
 export const dynamic = 'force-dynamic'
 
-const resources = ['menu_items', 'events', 'projects'] as const
+const resources = ['categories', 'products'] as const
 type Resource = (typeof resources)[number]
 type JsonRecord = Record<string, unknown>
 
@@ -16,56 +16,41 @@ async function requireAdmin() {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
   }
-
   return null
 }
 
-function pickMenuItem(data: JsonRecord) {
+function pickCategory(data: JsonRecord) {
   return {
-    title: String(data.title ?? '').trim(),
-    category: String(data.category ?? '').trim(),
-    price: String(data.price ?? '').trim(),
-    description: String(data.description ?? '').trim() || null,
-    is_available: typeof data.is_available === 'boolean' ? data.is_available : true,
-  }
-}
-
-function pickEvent(data: JsonRecord) {
-  return {
-    title: String(data.title ?? '').trim(),
-    date: String(data.date ?? '').trim(),
-    location: String(data.location ?? '').trim() || null,
-    price: String(data.price ?? '').trim() || null,
-    description: String(data.description ?? '').trim() || null,
-    payment_link: String(data.payment_link ?? '').trim() || null,
-  }
-}
-
-function pickProject(data: JsonRecord) {
-  return {
-    title: String(data.title ?? '').trim(),
+    name: String(data.name ?? '').trim(),
     slug: String(data.slug ?? '').trim().toLowerCase(),
-    emoji: String(data.emoji ?? '🚀').trim() || '🚀',
-    badge_tag: String(data.badge_tag ?? 'Opération MDLE').trim() || 'Opération MDLE',
+    sort_order: typeof data.sort_order === 'number' ? data.sort_order : 0,
+  }
+}
+
+function pickProduct(data: JsonRecord) {
+  return {
+    category_id: Number(data.category_id),
+    name: String(data.name ?? '').trim(),
     description: String(data.description ?? '').trim() || null,
-    is_active: typeof data.is_active === 'boolean' ? data.is_active : true,
-    has_reservation_form: typeof data.has_reservation_form === 'boolean' ? data.has_reservation_form : true,
-    form_config: typeof data.form_config === 'object' && data.form_config !== null ? data.form_config : {},
+    price: Number(data.price),
+    in_stock: typeof data.in_stock === 'boolean' ? data.in_stock : true,
+    sort_order: typeof data.sort_order === 'number' ? data.sort_order : 0,
   }
 }
 
 function sanitize(resource: Resource, data: JsonRecord): JsonRecord {
-  if (resource === 'menu_items') return pickMenuItem(data)
-  if (resource === 'events') return pickEvent(data)
-  return pickProject(data)
+  if (resource === 'categories') return pickCategory(data)
+  return pickProduct(data)
 }
 
 function isValid(resource: Resource, data: JsonRecord) {
   const hasText = (key: string) => typeof data[key] === 'string' && data[key].trim().length > 0
+  const isPositiveNumber = (key: string) => typeof data[key] === 'number' && data[key] >= 0
 
-  if (resource === 'menu_items') return hasText('title') && hasText('category') && hasText('price')
-  if (resource === 'events') return hasText('title') && hasText('date')
-  return hasText('title') && hasText('slug') && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(data.slug))
+  if (resource === 'categories') {
+    return hasText('name') && hasText('slug') && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(String(data.slug))
+  }
+  return hasText('name') && isPositiveNumber('price') && isPositiveNumber('category_id')
 }
 
 export async function GET() {
@@ -74,20 +59,19 @@ export async function GET() {
 
   try {
     const supabase = getSupabaseAdmin()
-    const [menu, events, projects] = await Promise.all([
-      supabase.from('menu_items').select('*').order('id'),
-      supabase.from('events').select('*').order('id'),
-      supabase.from('projects').select('*').order('id'),
+    const [cats, prods] = await Promise.all([
+      supabase.from('categories').select('*').order('sort_order'),
+      supabase.from('products').select('*').order('sort_order'),
     ])
 
-    if (menu.error || events.error || projects.error) {
-      throw menu.error ?? events.error ?? projects.error
+    if (cats.error || prods.error) {
+      throw cats.error ?? prods.error
     }
 
-    return NextResponse.json({ menuItems: menu.data ?? [], events: events.data ?? [], projects: projects.data ?? [] })
+    return NextResponse.json({ categories: cats.data ?? [], products: prods.data ?? [] })
   } catch (error) {
     console.error('Lecture administration impossible :', error)
-    return NextResponse.json({ error: 'Impossible de charger les données administratives.' }, { status: 500 })
+    return NextResponse.json({ error: 'Impossible de charger les données.' }, { status: 500 })
   }
 }
 

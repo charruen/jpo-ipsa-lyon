@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from 'crypto'
 import { cookies } from 'next/headers'
 
-const ADMIN_SESSION_COOKIE = 'mdle_admin_session'
+const ADMIN_SESSION_COOKIE = 'utragulinu_admin_session'
 const SESSION_TTL_SECONDS = 60 * 60 * 8
 
 type SessionPayload = {
