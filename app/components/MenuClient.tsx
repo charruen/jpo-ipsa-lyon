@@ -170,22 +170,24 @@ export default function MenuClient({
         ref={navRef}
         className="sticky top-0 z-30 backdrop-blur-xl bg-[#1a1612]/95 border-b border-gold-900/30 py-2 shadow-lg shadow-black/40"
       >
-        <div className="max-w-6xl mx-auto flex gap-2 overflow-x-auto no-scrollbar md:justify-center px-4 py-1">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              data-nav={cat.slug}
-              onClick={() => handleCategoryClick(cat.slug)}
-              className={`shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-200 cursor-pointer ${
-                activeSlug === cat.slug
-                  ? "bg-gold-600 text-white shadow-md shadow-gold-600/30 ring-1 ring-gold-400/40"
-                  : "bg-white/[0.04] text-corse-300 hover:bg-white/[0.08] hover:text-corse-100"
-              }`}
-            >
-              <span className="mr-1.5">{SECTION_ICONS[cat.slug] ?? "•"}</span>
-              {cat.name}
-            </button>
-          ))}
+        <div className="max-w-6xl mx-auto overflow-x-auto no-scrollbar px-4 py-1">
+          <div className="flex gap-2 w-max min-w-full justify-start md:justify-center">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                data-nav={cat.slug}
+                onClick={() => handleCategoryClick(cat.slug)}
+                className={`shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-200 cursor-pointer ${
+                  activeSlug === cat.slug
+                    ? "bg-gold-600 text-white shadow-md shadow-gold-600/30 ring-1 ring-gold-400/40"
+                    : "bg-white/[0.04] text-corse-300 hover:bg-white/[0.08] hover:text-corse-100"
+                }`}
+              >
+                <span className="mr-1.5">{SECTION_ICONS[cat.slug] ?? "•"}</span>
+                {cat.name}
+              </button>
+            ))}
+          </div>
         </div>
       </nav>
 
