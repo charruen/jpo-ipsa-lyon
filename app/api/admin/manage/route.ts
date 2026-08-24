@@ -105,9 +105,34 @@ export async function PATCH(request: Request) {
   if (denied) return denied
 
   try {
-    const body = await request.json() as { resource?: unknown; id?: unknown; data?: unknown }
+    const body = await request.json() as {
+      resource?: unknown
+      id?: unknown
+      data?: unknown
+      items?: { id: number; sort_order: number }[]
+    }
+
+    if (!isResource(body.resource)) {
+      return NextResponse.json({ error: 'Ressource invalide.' }, { status: 400 })
+    }
+
+    // Support batch reorder
+    if (Array.isArray(body.items)) {
+      const updates = body.items.map((item) =>
+        getSupabaseAdmin()
+          .from(body.resource as Resource)
+          .update({ sort_order: Number(item.sort_order) })
+          .eq('id', Number(item.id))
+      )
+      const results = await Promise.all(updates)
+      const failed = results.find((r) => r.error)
+      if (failed?.error) throw failed.error
+
+      return NextResponse.json({ success: true })
+    }
+
     const id = Number(body.id)
-    if (!isResource(body.resource) || !Number.isSafeInteger(id) || id < 1 || !body.data || typeof body.data !== 'object' || Array.isArray(body.data)) {
+    if (!Number.isSafeInteger(id) || id < 1 || !body.data || typeof body.data !== 'object' || Array.isArray(body.data)) {
       return NextResponse.json({ error: 'Requête invalide.' }, { status: 400 })
     }
 

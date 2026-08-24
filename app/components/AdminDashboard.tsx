@@ -38,14 +38,12 @@ export default function AdminDashboard() {
     price: "",
     category_id: "",
     description: "",
-    sort_order: 0,
   });
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [submittingProduct, setSubmittingProduct] = useState(false);
 
   // Category form (Add & Edit)
   const [newCatName, setNewCatName] = useState("");
-  const [newCatOrder, setNewCatOrder] = useState<number>(0);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [submittingCat, setSubmittingCat] = useState(false);
 
@@ -147,14 +145,14 @@ export default function AdminDashboard() {
             data: {
               name: editingCategory.name,
               slug,
-              sort_order: Number(editingCategory.sort_order),
+              sort_order: editingCategory.sort_order,
             },
           }),
         });
 
         if (res.ok) {
           setEditingCategory(null);
-          showFeedback("success", "Catégorie mise à jour !");
+          showFeedback("success", "Catégorie renommée !");
           fetchData();
         } else {
           const data = await res.json();
@@ -167,7 +165,7 @@ export default function AdminDashboard() {
       }
     } else {
       // Add new category
-      if (!newCatName) return;
+      if (!newCatName.trim()) return;
       const slug = newCatName
         .toLowerCase()
         .normalize("NFD")
@@ -175,10 +173,8 @@ export default function AdminDashboard() {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
 
-      const sortOrder =
-        newCatOrder > 0
-          ? newCatOrder
-          : (categories.length + 1) * 10;
+      const maxOrder = categories.reduce((max, c) => Math.max(max, c.sort_order || 0), 0);
+      const sortOrder = maxOrder + 10;
 
       try {
         const res = await fetch("/api/admin/manage", {
@@ -187,7 +183,7 @@ export default function AdminDashboard() {
           body: JSON.stringify({
             resource: "categories",
             data: {
-              name: newCatName,
+              name: newCatName.trim(),
               slug,
               sort_order: sortOrder,
             },
@@ -196,7 +192,6 @@ export default function AdminDashboard() {
 
         if (res.ok) {
           setNewCatName("");
-          setNewCatOrder(0);
           showFeedback("success", "Catégorie créée !");
           fetchData();
         } else {
@@ -211,26 +206,39 @@ export default function AdminDashboard() {
     }
   }
 
-  async function handleQuickReorderCat(category: Category, delta: number) {
-    const newOrder = category.sort_order + delta;
+  async function handleQuickReorderCat(idx: number, delta: number) {
+    const targetIdx = idx + delta;
+    if (targetIdx < 0 || targetIdx >= categories.length) return;
+
+    const newCats = [...categories];
+    const [moved] = newCats.splice(idx, 1);
+    newCats.splice(targetIdx, 0, moved);
+
+    const updated = newCats.map((cat, i) => ({
+      ...cat,
+      sort_order: (i + 1) * 10,
+    }));
+
+    // Optimistic UI update
+    setCategories(updated);
+
     try {
       const res = await fetch("/api/admin/manage", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           resource: "categories",
-          id: category.id,
-          data: {
-            ...category,
-            sort_order: newOrder,
-          },
+          items: updated.map((c) => ({ id: c.id, sort_order: c.sort_order })),
         }),
       });
-      if (res.ok) {
+
+      if (!res.ok) {
         fetchData();
+        showFeedback("error", "Erreur lors de la réorganisation.");
       }
     } catch {
-      showFeedback("error", "Erreur lors de la réorganisation.");
+      fetchData();
+      showFeedback("error", "Erreur réseau.");
     }
   }
 
@@ -266,12 +274,12 @@ export default function AdminDashboard() {
             resource: "products",
             id: editingProduct.id,
             data: {
-              name: editingProduct.name,
+              name: editingProduct.name.trim(),
               price: Number(editingProduct.price),
               category_id: Number(editingProduct.category_id),
-              description: editingProduct.description || null,
+              description: editingProduct.description ? editingProduct.description.trim() : null,
               in_stock: editingProduct.in_stock,
-              sort_order: Number(editingProduct.sort_order),
+              sort_order: editingProduct.sort_order,
             },
           }),
         });
@@ -291,8 +299,13 @@ export default function AdminDashboard() {
       }
     } else {
       // Add new product
-      if (!newProduct.name || !newProduct.price || !newProduct.category_id)
+      if (!newProduct.name.trim() || !newProduct.price || !newProduct.category_id)
         return;
+
+      const catId = parseInt(newProduct.category_id);
+      const catProducts = products.filter((p) => p.category_id === catId);
+      const maxOrder = catProducts.reduce((max, p) => Math.max(max, p.sort_order || 0), 0);
+      const sortOrder = maxOrder + 10;
 
       try {
         const res = await fetch("/api/admin/manage", {
@@ -301,12 +314,12 @@ export default function AdminDashboard() {
           body: JSON.stringify({
             resource: "products",
             data: {
-              name: newProduct.name,
+              name: newProduct.name.trim(),
               price: parseFloat(newProduct.price),
-              category_id: parseInt(newProduct.category_id),
-              description: newProduct.description || null,
+              category_id: catId,
+              description: newProduct.description ? newProduct.description.trim() : null,
               in_stock: true,
-              sort_order: Number(newProduct.sort_order) || 0,
+              sort_order: sortOrder,
             },
           }),
         });
@@ -317,7 +330,6 @@ export default function AdminDashboard() {
             price: "",
             category_id: "",
             description: "",
-            sort_order: 0,
           });
           showFeedback("success", "Produit ajouté !");
           fetchData();
@@ -330,6 +342,51 @@ export default function AdminDashboard() {
       } finally {
         setSubmittingProduct(false);
       }
+    }
+  }
+
+  async function handleQuickReorderProduct(product: Product, delta: number) {
+    const catProducts = products
+      .filter((p) => p.category_id === product.category_id)
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
+    const idx = catProducts.findIndex((p) => p.id === product.id);
+    if (idx === -1) return;
+
+    const targetIdx = idx + delta;
+    if (targetIdx < 0 || targetIdx >= catProducts.length) return;
+
+    const newCatProducts = [...catProducts];
+    const [moved] = newCatProducts.splice(idx, 1);
+    newCatProducts.splice(targetIdx, 0, moved);
+
+    const updatedCatProducts = newCatProducts.map((p, i) => ({
+      ...p,
+      sort_order: (i + 1) * 10,
+    }));
+
+    // Optimistic UI update
+    const updatedMap = new Map(updatedCatProducts.map((p) => [p.id, p]));
+    const newFullProducts = products.map((p) => updatedMap.get(p.id) ?? p);
+    setProducts(newFullProducts);
+
+    try {
+      const res = await fetch("/api/admin/manage", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resource: "products",
+          items: updatedCatProducts.map((p) => ({ id: p.id, sort_order: p.sort_order })),
+        }),
+      });
+
+      if (!res.ok) {
+        fetchData();
+        showFeedback("error", "Erreur lors de la réorganisation du produit.");
+      }
+    } catch {
+      fetchData();
+      showFeedback("error", "Erreur réseau.");
     }
   }
 
@@ -462,7 +519,7 @@ export default function AdminDashboard() {
           </div>
           <button
             onClick={handleLogout}
-            className="text-xs sm:text-sm text-corse-400 hover:text-red-400 transition-colors px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06]"
+            className="text-xs sm:text-sm text-corse-400 hover:text-red-400 transition-colors px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] cursor-pointer"
           >
             Déconnexion
           </button>
@@ -474,7 +531,7 @@ export default function AdminDashboard() {
             [
               { key: "stock", label: "📦 Stocks" },
               { key: "products", label: "🍔 Produits" },
-              { key: "categories", label: "📁 Catégories (Ordre)" },
+              { key: "categories", label: "📁 Catégories" },
             ] as { key: Tab; label: string }[]
           ).map((tab) => (
             <button
@@ -499,9 +556,9 @@ export default function AdminDashboard() {
         {activeTab === "stock" && (
           <section className="space-y-6">
             {categories.map((cat) => {
-              const catProducts = products.filter(
-                (p) => p.category_id === cat.id
-              );
+              const catProducts = products
+                .filter((p) => p.category_id === cat.id)
+                .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
               if (catProducts.length === 0) return null;
 
               return (
@@ -511,7 +568,7 @@ export default function AdminDashboard() {
                       {cat.name}
                     </h3>
                     <span className="text-xs text-corse-500">
-                      (ordre: {cat.sort_order})
+                      ({catProducts.length} produit{catProducts.length > 1 ? "s" : ""})
                     </span>
                   </div>
 
@@ -553,7 +610,7 @@ export default function AdminDashboard() {
                               setEditingProduct(p);
                               setActiveTab("products");
                             }}
-                            className="p-1.5 text-xs text-corse-400 hover:text-gold-300 bg-white/[0.04] rounded-lg hover:bg-white/[0.08]"
+                            className="p-1.5 text-xs text-corse-400 hover:text-gold-300 bg-white/[0.04] rounded-lg hover:bg-white/[0.08] cursor-pointer"
                             title="Modifier le produit"
                           >
                             ✏️
@@ -588,7 +645,7 @@ export default function AdminDashboard() {
                 {editingProduct && (
                   <button
                     onClick={() => setEditingProduct(null)}
-                    className="text-xs text-corse-400 hover:text-white px-2.5 py-1 bg-white/[0.05] rounded-lg"
+                    className="text-xs text-corse-400 hover:text-white px-2.5 py-1 bg-white/[0.05] rounded-lg cursor-pointer"
                   >
                     Annuler l&apos;édition
                   </button>
@@ -664,7 +721,7 @@ export default function AdminDashboard() {
                       editingProduct
                         ? setEditingProduct({
                             ...editingProduct,
-                            price: parseFloat(e.target.value) || 0,
+                            price: e.target.value ? Number(e.target.value) : ("" as unknown as number),
                           })
                         : setNewProduct({
                             ...newProduct,
@@ -674,27 +731,9 @@ export default function AdminDashboard() {
                     required
                   />
 
-                  <input
-                    type="number"
-                    placeholder="Ordre d'affichage (ex: 1, 2, 3)"
-                    className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-corse-100 placeholder:text-corse-600 focus:outline-none focus:border-gold-600/50"
-                    value={
-                      editingProduct
-                        ? editingProduct.sort_order
-                        : newProduct.sort_order
-                    }
-                    onChange={(e) =>
-                      editingProduct
-                        ? setEditingProduct({
-                            ...editingProduct,
-                            sort_order: parseInt(e.target.value) || 0,
-                          })
-                        : setNewProduct({
-                            ...newProduct,
-                            sort_order: parseInt(e.target.value) || 0,
-                          })
-                    }
-                  />
+                  <div className="flex items-center text-xs text-corse-400 bg-white/[0.02] border border-white/[0.05] rounded-xl px-4 py-3">
+                    💡 L&apos;ordre s&apos;ajuste avec les flèches ▲ / ▼ dans la liste ci-dessous.
+                  </div>
                 </div>
 
                 <textarea
@@ -733,52 +772,105 @@ export default function AdminDashboard() {
               </form>
             </div>
 
-            {/* List of existing products */}
-            <div className="space-y-4">
+            {/* List of products grouped by category with ▲ / ▼ reordering */}
+            <div className="space-y-6">
               <h3 className="font-semibold text-corse-300 text-sm">
-                Tous les produits existants
+                Produits par catégorie (cliquez sur ▲ ou ▼ pour déplacer)
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {products.map((p) => (
-                  <div
-                    key={p.id}
-                    className="flex items-center justify-between gap-3 p-4 bg-white/[0.02] border border-white/[0.05] rounded-xl hover:bg-white/[0.04] transition-all"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-semibold text-sm text-corse-100 truncate">
-                          {p.name}
-                        </p>
-                        <span className="text-xs text-gold-400 font-bold">
-                          {Number(p.price).toFixed(2)} €
-                        </span>
-                      </div>
-                      <p className="text-xs text-corse-400 mt-0.5">
-                        Catégorie :{" "}
-                        {categories.find((c) => c.id === p.category_id)?.name ||
-                          "—"}{" "}
-                        • Ordre : {p.sort_order}
-                      </p>
+
+              {categories.map((cat) => {
+                const catProducts = products
+                  .filter((p) => p.category_id === cat.id)
+                  .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
+                return (
+                  <div key={cat.id} className="space-y-3 bg-white/[0.01] border border-white/[0.04] p-4 rounded-2xl">
+                    <div className="flex items-center gap-2 border-b border-white/[0.06] pb-2">
+                      <h4 className="text-sm font-bold text-gold-400 uppercase tracking-wider">
+                        {cat.name}
+                      </h4>
+                      <span className="text-xs text-corse-500">
+                        ({catProducts.length} produit{catProducts.length > 1 ? "s" : ""})
+                      </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setEditingProduct(p)}
-                        className="px-3 py-1.5 text-xs font-semibold bg-white/[0.05] text-gold-300 rounded-lg hover:bg-white/[0.1] transition-all"
-                      >
-                        Modifier
-                      </button>
-                      <button
-                        onClick={() => deleteProduct(p.id)}
-                        className="px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-500/20 rounded-lg transition-all"
-                        title="Supprimer"
-                      >
-                        ✕
-                      </button>
-                    </div>
+                    {catProducts.length === 0 ? (
+                      <p className="text-xs text-corse-500 italic py-2">
+                        Aucun produit dans cette catégorie.
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        {catProducts.map((p, pIdx) => (
+                          <div
+                            key={p.id}
+                            className="flex items-center justify-between gap-3 p-3 bg-white/[0.02] border border-white/[0.05] rounded-xl hover:bg-white/[0.04] transition-all"
+                          >
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                              <span className="text-xs font-bold text-gold-400 bg-gold-400/10 px-2 py-1 rounded-lg border border-gold-400/20 shrink-0">
+                                #{pIdx + 1}
+                              </span>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <p className="font-semibold text-sm text-corse-100 truncate">
+                                    {p.name}
+                                  </p>
+                                  <span className="text-xs text-gold-400 font-bold">
+                                    {Number(p.price).toFixed(2)} €
+                                  </span>
+                                  {!p.in_stock && (
+                                    <span className="text-[10px] uppercase font-bold text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded">
+                                      Rupture
+                                    </span>
+                                  )}
+                                </div>
+                                {p.description && (
+                                  <p className="text-xs text-corse-400 truncate mt-0.5">
+                                    {p.description}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {/* Up / Down arrows */}
+                              <button
+                                onClick={() => handleQuickReorderProduct(p, -1)}
+                                disabled={pIdx === 0}
+                                className="px-2 py-1 text-xs bg-white/[0.05] hover:bg-white/[0.1] rounded text-corse-300 disabled:opacity-25 cursor-pointer disabled:cursor-not-allowed"
+                                title="Monter"
+                              >
+                                ▲
+                              </button>
+                              <button
+                                onClick={() => handleQuickReorderProduct(p, 1)}
+                                disabled={pIdx === catProducts.length - 1}
+                                className="px-2 py-1 text-xs bg-white/[0.05] hover:bg-white/[0.1] rounded text-corse-300 disabled:opacity-25 cursor-pointer disabled:cursor-not-allowed"
+                                title="Descendre"
+                              >
+                                ▼
+                              </button>
+
+                              <button
+                                onClick={() => setEditingProduct(p)}
+                                className="px-3 py-1 text-xs font-semibold bg-white/[0.05] text-gold-300 rounded-lg hover:bg-white/[0.1] cursor-pointer"
+                              >
+                                Modifier
+                              </button>
+                              <button
+                                onClick={() => deleteProduct(p.id)}
+                                className="p-1 text-xs text-red-400 hover:bg-red-500/20 rounded cursor-pointer"
+                                title="Supprimer"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
           </section>
         )}
@@ -797,7 +889,7 @@ export default function AdminDashboard() {
                 {editingCategory && (
                   <button
                     onClick={() => setEditingCategory(null)}
-                    className="text-xs text-corse-400 hover:text-white px-2.5 py-1 bg-white/[0.05] rounded-lg"
+                    className="text-xs text-corse-400 hover:text-white px-2.5 py-1 bg-white/[0.05] rounded-lg cursor-pointer"
                   >
                     Annuler
                   </button>
@@ -824,24 +916,9 @@ export default function AdminDashboard() {
                     required
                   />
 
-                  <input
-                    type="number"
-                    placeholder="Ordre d'affichage (ex: 10, 20, 30...)"
-                    className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-corse-100 placeholder:text-corse-600 focus:outline-none focus:border-gold-600/50"
-                    value={
-                      editingCategory
-                        ? editingCategory.sort_order
-                        : newCatOrder || ""
-                    }
-                    onChange={(e) =>
-                      editingCategory
-                        ? setEditingCategory({
-                            ...editingCategory,
-                            sort_order: parseInt(e.target.value) || 0,
-                          })
-                        : setNewCatOrder(parseInt(e.target.value) || 0)
-                    }
-                  />
+                  <div className="flex items-center text-xs text-corse-400 bg-white/[0.02] border border-white/[0.05] rounded-xl px-4 py-3">
+                    💡 L&apos;ordre s&apos;ajuste avec les flèches ▲ / ▼ ci-dessous.
+                  </div>
                 </div>
 
                 <button
@@ -861,7 +938,7 @@ export default function AdminDashboard() {
             {/* List & Reorder Categories */}
             <div className="space-y-3">
               <h3 className="font-semibold text-corse-300 text-sm">
-                Ordre des catégories sur le site (trié par numéro d&apos;ordre)
+                Ordre des catégories sur le site (cliquez sur ▲ ou ▼ pour déplacer)
               </h3>
               <div className="space-y-2">
                 {categories.map((cat, idx) => {
@@ -875,15 +952,14 @@ export default function AdminDashboard() {
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xs font-bold text-gold-400 bg-gold-400/10 px-2.5 py-1 rounded-lg border border-gold-400/20">
-                          #{cat.sort_order}
+                          #{idx + 1}
                         </span>
                         <div>
                           <p className="text-sm font-semibold text-corse-100">
                             {cat.name}
                           </p>
                           <p className="text-xs text-corse-500">
-                            {count} produit{count > 1 ? "s" : ""} • slug:{" "}
-                            {cat.slug}
+                            {count} produit{count > 1 ? "s" : ""}
                           </p>
                         </div>
                       </div>
@@ -891,30 +967,30 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-2">
                         {/* Quick Up / Down reordering */}
                         <button
-                          onClick={() => handleQuickReorderCat(cat, -1)}
+                          onClick={() => handleQuickReorderCat(idx, -1)}
                           disabled={idx === 0}
-                          className="px-2 py-1 text-xs bg-white/[0.05] hover:bg-white/[0.1] rounded text-corse-300 disabled:opacity-30"
+                          className="px-2 py-1 text-xs bg-white/[0.05] hover:bg-white/[0.1] rounded text-corse-300 disabled:opacity-25 cursor-pointer disabled:cursor-not-allowed"
                           title="Monter"
                         >
                           ▲
                         </button>
                         <button
-                          onClick={() => handleQuickReorderCat(cat, 1)}
+                          onClick={() => handleQuickReorderCat(idx, 1)}
                           disabled={idx === categories.length - 1}
-                          className="px-2 py-1 text-xs bg-white/[0.05] hover:bg-white/[0.1] rounded text-corse-300 disabled:opacity-30"
+                          className="px-2 py-1 text-xs bg-white/[0.05] hover:bg-white/[0.1] rounded text-corse-300 disabled:opacity-25 cursor-pointer disabled:cursor-not-allowed"
                           title="Descendre"
                         >
                           ▼
                         </button>
                         <button
                           onClick={() => setEditingCategory(cat)}
-                          className="px-3 py-1 text-xs font-semibold bg-white/[0.05] text-gold-300 rounded-lg hover:bg-white/[0.1]"
+                          className="px-3 py-1 text-xs font-semibold bg-white/[0.05] text-gold-300 rounded-lg hover:bg-white/[0.1] cursor-pointer"
                         >
-                          Éditer
+                          Renommer
                         </button>
                         <button
                           onClick={() => deleteCategory(cat.id)}
-                          className="p-1 text-xs text-red-400 hover:bg-red-500/20 rounded"
+                          className="p-1 text-xs text-red-400 hover:bg-red-500/20 rounded cursor-pointer"
                           title="Supprimer"
                         >
                           ✕

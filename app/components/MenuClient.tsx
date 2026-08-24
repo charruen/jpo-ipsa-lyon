@@ -270,14 +270,59 @@ export default function MenuClient({
       </div>
 
       {/* Footer */}
-      <footer className="mt-20 px-4 pb-12 text-center border-t border-white/[0.04] pt-8 max-w-4xl mx-auto">
-        <div className="w-16 h-px bg-gradient-to-r from-transparent via-gold-700/50 to-transparent mx-auto mb-4" />
-        <p className="text-xs text-corse-400 uppercase tracking-[0.3em] font-medium">
-          U Tragulinu
-        </p>
-        <p className="text-xs text-corse-500 mt-1">
-          Saint-Cyprien, Lecci — Porto-Vecchio, Corse
-        </p>
+      <footer className="mt-20 px-4 pb-12 text-center border-t border-white/[0.06] pt-10 max-w-4xl mx-auto space-y-8">
+        {/* Actions Réseaux & Avis */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-md mx-auto">
+          {/* Bouton Instagram */}
+          <a
+            href="https://www.instagram.com/" // À remplacer par l'URL Instagram d'U Tragulinu
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center justify-center gap-3 w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/[0.03] hover:bg-gradient-to-r hover:from-purple-950/40 hover:via-pink-950/30 hover:to-amber-950/30 border border-white/[0.08] hover:border-pink-500/40 text-corse-100 hover:text-white transition-all duration-300 shadow-lg hover:shadow-pink-500/10 cursor-pointer"
+          >
+            <div className="w-5 h-5 shrink-0 flex items-center justify-center text-pink-400 group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+              </svg>
+            </div>
+            <span className="text-xs sm:text-sm font-medium tracking-wide">
+              Instagram
+            </span>
+          </a>
+
+          {/* Bouton Avis Google */}
+          <a
+            href="https://g.page/r/" // À remplacer par le lien direct Google Review d'U Tragulinu
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center justify-center gap-3 w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/[0.03] hover:bg-gold-500/10 border border-white/[0.08] hover:border-gold-500/40 text-corse-100 hover:text-gold-200 transition-all duration-300 shadow-lg hover:shadow-gold-500/10 cursor-pointer"
+          >
+            <div className="w-5 h-5 shrink-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5c1.54 0 2.94.55 4.04 1.57l3.03-3.03C17.24 1.75 14.8 1 12 1 7.37 1 3.44 3.73 1.58 7.69l3.66 2.84C6.12 7.57 8.81 5 12 5z" />
+                <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58l3.71 2.88c2.16-2 3.71-4.95 3.71-8.7z" />
+                <path fill="#FBBC05" d="M5.24 14.47c-.23-.69-.36-1.43-.36-2.2s.13-1.51.36-2.2L1.58 7.23C.58 9.22 0 11.45 0 13.73c0 2.28.58 4.51 1.58 6.5l3.66-2.84c-.23-.69-.36-1.43-.36-2.2s.13-1.51.36-2.2z" />
+                <path fill="#34A853" d="M12 23c3.24 0 5.95-1.08 7.93-2.91l-3.71-2.88c-1.07.72-2.45 1.16-4.22 1.16-3.19 0-5.88-2.57-6.76-5.53L1.58 15.68C3.44 19.64 7.37 23 12 23z" />
+              </svg>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs sm:text-sm font-medium tracking-wide">
+                Laisser un avis
+              </span>
+              <span className="text-gold-400 text-xs">★★★★★</span>
+            </div>
+          </a>
+        </div>
+
+        <div className="space-y-1">
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gold-700/50 to-transparent mx-auto mb-3" />
+          <p className="text-xs text-corse-400 uppercase tracking-[0.3em] font-medium">
+            U Tragulinu
+          </p>
+          <p className="text-xs text-corse-500 mt-1">
+            Saint-Cyprien, Lecci — Porto-Vecchio, Corse
+          </p>
+        </div>
       </footer>
     </main>
   );
