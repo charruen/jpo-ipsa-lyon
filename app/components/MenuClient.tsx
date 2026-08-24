@@ -275,7 +275,7 @@ export default function MenuClient({
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-md mx-auto">
           {/* Bouton Instagram */}
           <a
-            href="https://www.instagram.com/" // À remplacer par l'URL Instagram d'U Tragulinu
+            href="https://www.instagram.com/restaurant.utragulinu/"
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center justify-center gap-3 w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/[0.03] hover:bg-gradient-to-r hover:from-purple-950/40 hover:via-pink-950/30 hover:to-amber-950/30 border border-white/[0.08] hover:border-pink-500/40 text-corse-100 hover:text-white transition-all duration-300 shadow-lg hover:shadow-pink-500/10 cursor-pointer"
@@ -292,7 +292,7 @@ export default function MenuClient({
 
           {/* Bouton Avis Google */}
           <a
-            href="https://g.page/r/" // À remplacer par le lien direct Google Review d'U Tragulinu
+            href="https://maps.app.goo.gl/EmqMxBNq7n8WazDDA"
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center justify-center gap-3 w-full sm:w-auto px-5 py-3 rounded-2xl bg-white/[0.03] hover:bg-gold-500/10 border border-white/[0.08] hover:border-gold-500/40 text-corse-100 hover:text-gold-200 transition-all duration-300 shadow-lg hover:shadow-gold-500/10 cursor-pointer"
