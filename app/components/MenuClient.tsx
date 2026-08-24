@@ -34,6 +34,20 @@ const SECTION_ICONS: Record<string, string> = {
   softs: "🥤",
   "boissons-chaudes": "☕",
 };
+// Extraction automatique de l'emoji au début du nom de catégorie ou fallback
+function parseCategoryDisplay(cat: Category) {
+  const match = cat.name.match(/^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji}\uFE0F)\s*(.*)$/u);
+  if (match) {
+    return {
+      icon: match[1],
+      displayName: match[2] || cat.name,
+    };
+  }
+  return {
+    icon: SECTION_ICONS[cat.slug] ?? "🍽️",
+    displayName: cat.name,
+  };
+}
 
 export default function MenuClient({
   categories: initialCategories,
@@ -172,21 +186,23 @@ export default function MenuClient({
       >
         <div className="max-w-6xl mx-auto overflow-x-auto no-scrollbar px-4 py-1">
           <div className="flex gap-2 w-max min-w-full justify-start md:justify-center">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                data-nav={cat.slug}
-                onClick={() => handleCategoryClick(cat.slug)}
-                className={`shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-200 cursor-pointer ${
-                  activeSlug === cat.slug
+            {categories.map((cat) => {
+              const { icon, displayName } = parseCategoryDisplay(cat);
+              return (
+                <button
+                  key={cat.id}
+                  data-nav={cat.slug}
+                  onClick={() => handleCategoryClick(cat.slug)}
+                  className={`shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-200 cursor-pointer ${activeSlug === cat.slug
                     ? "bg-gold-600 text-white shadow-md shadow-gold-600/30 ring-1 ring-gold-400/40"
                     : "bg-white/[0.04] text-corse-300 hover:bg-white/[0.08] hover:text-corse-100"
-                }`}
-              >
-                <span className="mr-1.5">{SECTION_ICONS[cat.slug] ?? "•"}</span>
-                {cat.name}
-              </button>
-            ))}
+                    }`}
+                >
+                  <span className="mr-1.5">{icon}</span>
+                  {displayName}
+                </button>
+              );
+            })}
           </div>
         </div>
       </nav>
@@ -196,6 +212,7 @@ export default function MenuClient({
         {categories.map((cat, catIndex) => {
           const catProducts = productsByCategory[cat.id] ?? [];
           if (catProducts.length === 0) return null;
+          const { icon, displayName } = parseCategoryDisplay(cat);
 
           return (
             <section
@@ -209,14 +226,12 @@ export default function MenuClient({
             >
               {/* Section header */}
               <div className="flex items-center gap-3.5 mb-6 pb-2 border-b border-gold-900/30">
-                <span className="text-2xl sm:text-3xl">
-                  {SECTION_ICONS[cat.slug] ?? "•"}
-                </span>
+                <span className="text-2xl sm:text-3xl">{icon}</span>
                 <h2
                   className="text-2xl sm:text-3xl text-gold-300 tracking-wide font-serif"
                   style={{ fontFamily: "var(--font-playfair), serif" }}
                 >
-                  {cat.name}
+                  {displayName}
                 </h2>
                 <div className="flex-1 h-px bg-gradient-to-r from-gold-800/40 via-gold-800/10 to-transparent ml-2" />
               </div>
@@ -226,9 +241,8 @@ export default function MenuClient({
                 {catProducts.map((product) => (
                   <div
                     key={product.id}
-                    className={`group relative p-4 sm:p-5 rounded-2xl bg-white/[0.02] border border-white/[0.04] transition-all duration-300 hover:bg-white/[0.05] hover:border-gold-700/30 ${
-                      !product.in_stock ? "opacity-45" : ""
-                    }`}
+                    className={`group relative p-4 sm:p-5 rounded-2xl bg-white/[0.02] border border-white/[0.04] transition-all duration-300 hover:bg-white/[0.05] hover:border-gold-700/30 ${!product.in_stock ? "opacity-45" : ""
+                      }`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
@@ -336,6 +350,6 @@ export default function MenuClient({
           </p>
         </div>
       </footer>
-    </main>
+    </main >
   );
 }

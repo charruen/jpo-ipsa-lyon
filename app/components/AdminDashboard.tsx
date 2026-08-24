@@ -21,6 +21,19 @@ type Product = {
 
 type Tab = "products" | "categories" | "stock";
 
+const SUGGESTED_EMOJIS = [
+  "🍕", "🍔", "🌮", "🍣", "🥗", "🥩", "🥬", "🍮", "🍨",
+  "🍸", "🍷", "🍺", "🥃", "🥤", "☕", "🍰", "🥐", "🍝", "🍽️"
+];
+
+function extractEmojiAndName(rawName: string) {
+  const match = rawName.match(/^(\p{Extended_Pictographic}|\p{Emoji_Presentation}|\p{Emoji}\uFE0F)\s*(.*)$/u);
+  if (match) {
+    return { emoji: match[1], cleanName: match[2] };
+  }
+  return { emoji: "🍽️", cleanName: rawName };
+}
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
@@ -43,8 +56,11 @@ export default function AdminDashboard() {
   const [submittingProduct, setSubmittingProduct] = useState(false);
 
   // Category form (Add & Edit)
+  const [newCatEmoji, setNewCatEmoji] = useState("🍕");
   const [newCatName, setNewCatName] = useState("");
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editCatEmoji, setEditCatEmoji] = useState("🍽️");
+  const [editCatName, setEditCatName] = useState("");
   const [submittingCat, setSubmittingCat] = useState(false);
 
   // Feedback banner
@@ -122,13 +138,25 @@ export default function AdminDashboard() {
   }
 
   // --- CATEGORIES LOGIC ---
+  function startEditingCategory(cat: Category) {
+    const { emoji, cleanName } = extractEmojiAndName(cat.name);
+    setEditingCategory(cat);
+    setEditCatEmoji(emoji);
+    setEditCatName(cleanName);
+  }
+
   async function handleSaveCategory(e: React.FormEvent) {
     e.preventDefault();
     setSubmittingCat(true);
 
     if (editingCategory) {
       // Edit category
-      const slug = editingCategory.name
+      const cleanName = editCatName.trim();
+      if (!cleanName) return;
+      const emoji = editCatEmoji.trim() || "🍽️";
+      const fullName = `${emoji} ${cleanName}`;
+
+      const slug = cleanName
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -143,7 +171,7 @@ export default function AdminDashboard() {
             resource: "categories",
             id: editingCategory.id,
             data: {
-              name: editingCategory.name,
+              name: fullName,
               slug,
               sort_order: editingCategory.sort_order,
             },
@@ -152,7 +180,7 @@ export default function AdminDashboard() {
 
         if (res.ok) {
           setEditingCategory(null);
-          showFeedback("success", "Catégorie renommée !");
+          showFeedback("success", "Catégorie modifiée !");
           fetchData();
         } else {
           const data = await res.json();
@@ -165,8 +193,12 @@ export default function AdminDashboard() {
       }
     } else {
       // Add new category
-      if (!newCatName.trim()) return;
-      const slug = newCatName
+      const cleanName = newCatName.trim();
+      if (!cleanName) return;
+      const emoji = newCatEmoji.trim() || "🍕";
+      const fullName = `${emoji} ${cleanName}`;
+
+      const slug = cleanName
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
@@ -183,7 +215,7 @@ export default function AdminDashboard() {
           body: JSON.stringify({
             resource: "categories",
             data: {
-              name: newCatName.trim(),
+              name: fullName,
               slug,
               sort_order: sortOrder,
             },
@@ -192,6 +224,7 @@ export default function AdminDashboard() {
 
         if (res.ok) {
           setNewCatName("");
+          setNewCatEmoji("🍕");
           showFeedback("success", "Catégorie créée !");
           fetchData();
         } else {
@@ -493,11 +526,10 @@ export default function AdminDashboard() {
         {/* Feedback banner */}
         {feedback && (
           <div
-            className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl text-sm font-semibold shadow-2xl transition-all ${
-              feedback.type === "success"
-                ? "bg-emerald-600 text-white"
-                : "bg-red-600 text-white"
-            }`}
+            className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl text-sm font-semibold shadow-2xl transition-all ${feedback.type === "success"
+              ? "bg-emerald-600 text-white"
+              : "bg-red-600 text-white"
+              }`}
           >
             {feedback.msg}
           </div>
@@ -541,11 +573,10 @@ export default function AdminDashboard() {
                 setEditingProduct(null);
                 setEditingCategory(null);
               }}
-              className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                activeTab === tab.key
-                  ? "bg-gold-600 text-white shadow-lg shadow-gold-600/25"
-                  : "text-corse-400 hover:text-corse-200 hover:bg-white/[0.03]"
-              }`}
+              className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${activeTab === tab.key
+                ? "bg-gold-600 text-white shadow-lg shadow-gold-600/25"
+                : "text-corse-400 hover:text-corse-200 hover:bg-white/[0.03]"
+                }`}
             >
               {tab.label}
             </button>
@@ -597,11 +628,10 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2 shrink-0">
                           <button
                             onClick={() => toggleStock(p)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                              p.in_stock
-                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30"
-                                : "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30"
-                            }`}
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${p.in_stock
+                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30"
+                              : "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30"
+                              }`}
                           >
                             {p.in_stock ? "✓ En stock" : "✕ Rupture"}
                           </button>
@@ -664,9 +694,9 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       editingProduct
                         ? setEditingProduct({
-                            ...editingProduct,
-                            name: e.target.value,
-                          })
+                          ...editingProduct,
+                          name: e.target.value,
+                        })
                         : setNewProduct({ ...newProduct, name: e.target.value })
                     }
                     required
@@ -682,13 +712,13 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       editingProduct
                         ? setEditingProduct({
-                            ...editingProduct,
-                            category_id: parseInt(e.target.value),
-                          })
+                          ...editingProduct,
+                          category_id: parseInt(e.target.value),
+                        })
                         : setNewProduct({
-                            ...newProduct,
-                            category_id: e.target.value,
-                          })
+                          ...newProduct,
+                          category_id: e.target.value,
+                        })
                     }
                     required
                   >
@@ -720,13 +750,13 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       editingProduct
                         ? setEditingProduct({
-                            ...editingProduct,
-                            price: e.target.value ? Number(e.target.value) : ("" as unknown as number),
-                          })
+                          ...editingProduct,
+                          price: e.target.value ? Number(e.target.value) : ("" as unknown as number),
+                        })
                         : setNewProduct({
-                            ...newProduct,
-                            price: e.target.value,
-                          })
+                          ...newProduct,
+                          price: e.target.value,
+                        })
                     }
                     required
                   />
@@ -748,13 +778,13 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     editingProduct
                       ? setEditingProduct({
-                          ...editingProduct,
-                          description: e.target.value,
-                        })
+                        ...editingProduct,
+                        description: e.target.value,
+                      })
                       : setNewProduct({
-                          ...newProduct,
-                          description: e.target.value,
-                        })
+                        ...newProduct,
+                        description: e.target.value,
+                      })
                   }
                 />
 
@@ -766,8 +796,8 @@ export default function AdminDashboard() {
                   {submittingProduct
                     ? "Enregistrement..."
                     : editingProduct
-                    ? "Mettre à jour le produit"
-                    : "Ajouter le produit"}
+                      ? "Mettre à jour le produit"
+                      : "Ajouter le produit"}
                 </button>
               </form>
             </div>
@@ -876,6 +906,7 @@ export default function AdminDashboard() {
         )}
 
         {/* ================= CATEGORIES TAB (ORDERING) ================= */}
+        {/* ================= CATEGORIES TAB (ORDERING) ================= */}
         {activeTab === "categories" && (
           <section className="space-y-8">
             {/* Add or Edit Category Form */}
@@ -897,28 +928,52 @@ export default function AdminDashboard() {
               </div>
 
               <form onSubmit={handleSaveCategory} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex gap-3">
                   <input
                     type="text"
-                    placeholder="Nom (ex: Entrées, Cocktails...)"
-                    className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-corse-100 placeholder:text-corse-600 focus:outline-none focus:border-gold-600/50"
-                    value={
-                      editingCategory ? editingCategory.name : newCatName
-                    }
+                    placeholder="Emoji"
+                    className="w-16 text-center text-xl px-3 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-corse-100 focus:outline-none focus:border-gold-600/50"
+                    value={editingCategory ? editCatEmoji : newCatEmoji}
                     onChange={(e) =>
                       editingCategory
-                        ? setEditingCategory({
-                            ...editingCategory,
-                            name: e.target.value,
-                          })
+                        ? setEditCatEmoji(e.target.value)
+                        : setNewCatEmoji(e.target.value)
+                    }
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Nom (ex: Pizzas, Pokés...)"
+                    className="flex-1 px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-corse-100 placeholder:text-corse-600 focus:outline-none focus:border-gold-600/50"
+                    value={editingCategory ? editCatName : newCatName}
+                    onChange={(e) =>
+                      editingCategory
+                        ? setEditCatName(e.target.value)
                         : setNewCatName(e.target.value)
                     }
                     required
                   />
+                </div>
 
-                  <div className="flex items-center text-xs text-corse-400 bg-white/[0.02] border border-white/[0.05] rounded-xl px-4 py-3">
-                    💡 L&apos;ordre s&apos;ajuste avec les flèches ▲ / ▼ ci-dessous.
-                  </div>
+                {/* Suggestions d'emojis rapides */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="text-xs text-corse-500 self-center mr-1">
+                    Emojis rapides :
+                  </span>
+                  {SUGGESTED_EMOJIS.map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() =>
+                        editingCategory
+                          ? setEditCatEmoji(emoji)
+                          : setNewCatEmoji(emoji)
+                      }
+                      className="w-8 h-8 rounded-lg bg-white/5 hover:bg-gold-500/20 text-base flex items-center justify-center transition-colors cursor-pointer"
+                    >
+                      {emoji}
+                    </button>
+                  ))}
                 </div>
 
                 <button
@@ -929,8 +984,8 @@ export default function AdminDashboard() {
                   {submittingCat
                     ? "Enregistrement..."
                     : editingCategory
-                    ? "Mettre à jour la catégorie"
-                    : "Créer la catégorie"}
+                      ? "Mettre à jour la catégorie"
+                      : "Créer la catégorie"}
                 </button>
               </form>
             </div>
@@ -945,6 +1000,8 @@ export default function AdminDashboard() {
                   const count = products.filter(
                     (p) => p.category_id === cat.id
                   ).length;
+                  const { emoji, cleanName } = extractEmojiAndName(cat.name);
+
                   return (
                     <div
                       key={cat.id}
@@ -954,9 +1011,10 @@ export default function AdminDashboard() {
                         <span className="text-xs font-bold text-gold-400 bg-gold-400/10 px-2.5 py-1 rounded-lg border border-gold-400/20">
                           #{idx + 1}
                         </span>
+                        <span className="text-2xl">{emoji}</span>
                         <div>
                           <p className="text-sm font-semibold text-corse-100">
-                            {cat.name}
+                            {cleanName}
                           </p>
                           <p className="text-xs text-corse-500">
                             {count} produit{count > 1 ? "s" : ""}
@@ -983,7 +1041,7 @@ export default function AdminDashboard() {
                           ▼
                         </button>
                         <button
-                          onClick={() => setEditingCategory(cat)}
+                          onClick={() => startEditingCategory(cat)}
                           className="px-3 py-1 text-xs font-semibold bg-white/[0.05] text-gold-300 rounded-lg hover:bg-white/[0.1] cursor-pointer"
                         >
                           Renommer
