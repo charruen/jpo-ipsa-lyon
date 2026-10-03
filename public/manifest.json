@@ -1,0 +1,24 @@
+{
+  "name": "IPSA Lyon — Compagnon JPO",
+  "short_name": "IPSA JPO",
+  "description": "Application compagnon pour la JPO IPSA Lyon et compte rendu Parcoursup",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/ipsa-logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/ipsa-logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

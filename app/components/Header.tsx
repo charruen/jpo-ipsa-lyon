@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import {
   CloudCheck,
   CloudOff,
   RefreshCw,
   Sparkles,
   Settings as SettingsIcon,
-  Plane,
 } from "lucide-react";
 import { JPOAppState } from "@/types/jpo";
 
@@ -35,13 +35,18 @@ export default function Header({
       <div className="max-w-5xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3">
         {/* Brand / Title */}
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-0.5 shadow-lg shadow-blue-500/20 shrink-0">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Plane className="w-5 h-5 text-cyan-400 -rotate-45" />
-            </div>
+          <div className="relative flex items-center justify-center h-10 w-13 sm:w-16 rounded-xl bg-white p-1 shadow-md shadow-blue-500/20 shrink-0 border border-slate-700/60 overflow-hidden">
+            <Image
+              src="/ipsa-logo.png"
+              alt="Logo IPSA"
+              width={64}
+              height={40}
+              className="h-full w-full object-contain"
+              priority
+            />
             <span className="absolute -bottom-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 border border-slate-950"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-slate-950"></span>
             </span>
           </div>
 

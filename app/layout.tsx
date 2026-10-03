@@ -31,6 +31,17 @@ export const metadata: Metadata = {
     "Concours Advance",
     "Projet de formation motivé",
   ],
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/ipsa-logo.png",
+    shortcut: "/ipsa-logo.png",
+    apple: "/ipsa-logo.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "IPSA JPO",
+  },
 };
 
 export default function RootLayout({
