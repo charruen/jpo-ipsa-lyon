@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -7,32 +7,30 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-});
+export const viewport: Viewport = {
+  themeColor: "#020617",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
-  title: "U Tragulinu — Carte & Menu",
+  title: "IPSA Lyon — Compagnon JPO & Compte Rendu Parcoursup",
   description:
-    "Découvrez la carte du restaurant U Tragulinu à Saint-Cyprien, Lecci — Porto-Vecchio, Corse. Cuisine méditerranéenne et spécialités corses.",
+    "Application compagnon pour la Journée Portes Ouvertes de l'école d'ingénieurs IPSA (Campus de Lyon) : agenda dynamique, checklist questions stratégiques, carnet de visite et générateur de compte-rendu Parcoursup & Famille.",
   keywords: [
-    "restaurant",
-    "corse",
-    "porto-vecchio",
-    "saint-cyprien",
-    "lecci",
-    "carte",
-    "menu",
-    "U Tragulinu",
+    "IPSA",
+    "IPSA Lyon",
+    "JPO",
+    "Journée Portes Ouvertes",
+    "Parcoursup",
+    "École d'ingénieurs",
+    "Aéronautique",
+    "Aérospatial",
+    "Concours Advance",
+    "Projet de formation motivé",
   ],
-  openGraph: {
-    title: "U Tragulinu — Carte & Menu",
-    description:
-      "Cuisine méditerranéenne et spécialités corses à Saint-Cyprien, Lecci.",
-    locale: "fr_FR",
-    type: "website",
-  },
 };
 
 export default function RootLayout({
@@ -41,11 +39,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="fr"
-      className={`${inter.variable} ${playfair.variable} scroll-smooth`}
-    >
-      <body className="min-h-dvh antialiased">{children}</body>
+    <html lang="fr" className={`${inter.variable} scroll-smooth`}>
+      <body className="min-h-screen antialiased bg-slate-950 text-slate-100 selection:bg-blue-500 selection:text-white">
+        {children}
+      </body>
     </html>
   );
 }
