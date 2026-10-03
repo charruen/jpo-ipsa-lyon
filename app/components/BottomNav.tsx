@@ -60,14 +60,14 @@ export default function BottomNav({
         <button
           onClick={onQuickAdd}
           title="Ajouter une note ou question rapidement"
-          className="flex items-center justify-center w-13 h-13 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-500/35 border border-cyan-400/40 active:scale-90 transition-transform"
+          className="flex items-center justify-center w-14 h-14 rounded-full ipsa-gradient-btn text-white shadow-xl shadow-[#00A3E0]/35 border border-[#38BDF8]/60 active:scale-90 transition-transform"
         >
           <Plus className="w-7 h-7" />
         </button>
       </div>
 
       {/* Bottom Sticky Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 text-slate-400 pb-safe">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#060D1E]/95 backdrop-blur-xl border-t border-[#00A3E0]/25 text-slate-400 pb-safe shadow-[0_-4px_25px_rgba(0,0,0,0.5)]">
         <div className="max-w-md mx-auto flex items-center justify-around px-2 py-1.5">
           {tabs.map((tab) => {
             const isActive = currentTab === tab.id;
@@ -79,18 +79,18 @@ export default function BottomNav({
                 onClick={() => onChangeTab(tab.id)}
                 className={`flex-1 relative flex flex-col items-center justify-center py-1.5 px-1 rounded-xl transition-all ${
                   isActive
-                    ? "text-cyan-400 font-semibold"
+                    ? "text-[#38BDF8] font-bold"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
                 <div className="relative">
                   <Icon
                     className={`w-5 h-5 transition-transform ${
-                      isActive ? "scale-110 text-cyan-400" : ""
+                      isActive ? "scale-110 text-[#38BDF8] drop-shadow-[0_0_8px_rgba(0,163,224,0.5)]" : ""
                     }`}
                   />
                   {tab.badge !== undefined && tab.badge > 0 && (
-                    <span className="absolute -top-1.5 -right-2.5 px-1.5 py-0.2 min-w-4 text-[10px] font-bold rounded-full bg-blue-500 text-white border border-slate-950 flex items-center justify-center">
+                    <span className="absolute -top-1.5 -right-2.5 px-1.5 py-0.2 min-w-4 text-[10px] font-bold rounded-full bg-[#004F9F] text-sky-100 border border-[#00A3E0]/50 flex items-center justify-center shadow-sm">
                       {tab.badge}
                     </span>
                   )}
@@ -100,7 +100,7 @@ export default function BottomNav({
                 </span>
 
                 {isActive && (
-                  <span className="absolute bottom-0 w-8 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
+                  <span className="absolute bottom-0 w-8 h-0.5 bg-gradient-to-r from-[#004F9F] via-[#00A3E0] to-[#38BDF8] rounded-full shadow-[0_0_6px_#00A3E0]" />
                 )}
               </button>
             );

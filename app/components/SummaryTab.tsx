@@ -123,13 +123,13 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
   };
 
   const downloadMarkdown = () => {
-    const content = `# COMPTE RENDU JPO IPSA LYON\n\n## 1. DOSSIER PARCOURSUP (PROJET DE FORMATION MOTIVÉ)\n\n${summary.parcoursupDraft}\n\n---\n\n## 2. DÉBRIEFING POUR LES PROCHES\n\n${summary.familyDebriefDraft}\n\n---\n\n## 3. FICHE DÉTAILLÉE DES STANDS ET LABOS\n\n${state.notes
+    const mdContent = `# COMPTE RENDU JPO IPSA LYON\n\n## 1. DOSSIER PARCOURSUP (PROJET DE FORMATION MOTIVÉ)\n\n${summary.parcoursupDraft}\n\n---\n\n## 2. DÉBRIEFING POUR LES PROCHES\n\n${summary.familyDebriefDraft}\n\n---\n\n## 3. FICHE DÉTAILLÉE DES STANDS ET LABOS\n\n${state.notes
       .map(
         (n) => `### ${n.standName} (${n.rating}/5)\n- Verdict: ${n.verdict}\n- Contact: ${n.contactName || "N/A"}\n- Points forts: ${n.pros.join(", ")}\n- Notes: ${n.content}\n`
       )
       .join("\n")}`;
 
-    const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+    const blob = new Blob([mdContent], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -141,11 +141,11 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
   return (
     <div className="space-y-4 pb-24">
       {/* Top Banner */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm backdrop-blur">
+      <div className="bg-[#0A1326]/90 border border-[#00A3E0]/20 rounded-2xl p-4 sm:p-5 shadow-sm backdrop-blur">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
+              <Sparkles className="w-5 h-5 text-[#38BDF8] animate-pulse" />
               <h2 className="text-lg font-bold text-white">
                 Générateur de Compte Rendu & Synthèse
               </h2>
@@ -157,7 +157,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
 
           <button
             onClick={handleRegenerateAll}
-            className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-md shadow-blue-500/25 active:scale-95 shrink-0"
+            className="ipsa-gradient-btn flex items-center justify-center gap-1.5 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all active:scale-95 shrink-0"
           >
             <RefreshCw className="w-4 h-4" />
             <span>Actualiser avec mes notes</span>
@@ -165,13 +165,13 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
         </div>
 
         {/* View Switcher */}
-        <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-800 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-2 mt-4 pt-3 border-t border-[#004F9F]/30 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveView("parcoursup")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
               activeView === "parcoursup"
-                ? "bg-blue-600 border-blue-400 text-white shadow-md shadow-blue-600/30"
-                : "bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-white"
+                ? "bg-[#004F9F] border-[#00A3E0]/50 text-white shadow-md shadow-[#004F9F]/30"
+                : "bg-[#0A1326]/80 border-[#004F9F]/30 text-slate-400 hover:text-white"
             }`}
           >
             <GraduationCap className="w-4 h-4" />
@@ -182,8 +182,8 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
             onClick={() => setActiveView("family")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
               activeView === "family"
-                ? "bg-indigo-600 border-indigo-400 text-white shadow-md shadow-indigo-600/30"
-                : "bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-white"
+                ? "bg-[#00A3E0]/20 border-[#00A3E0]/50 text-[#38BDF8] shadow-md shadow-[#00A3E0]/15"
+                : "bg-[#0A1326]/80 border-[#004F9F]/30 text-slate-400 hover:text-white"
             }`}
           >
             <Users className="w-4 h-4" />
@@ -194,8 +194,8 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
             onClick={() => setActiveView("print")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
               activeView === "print"
-                ? "bg-cyan-600 border-cyan-400 text-slate-950 font-bold shadow-md shadow-cyan-600/30"
-                : "bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-white"
+                ? "bg-[#38BDF8] border-[#38BDF8] text-[#060D1E] font-bold shadow-md shadow-[#38BDF8]/25"
+                : "bg-[#0A1326]/80 border-[#004F9F]/30 text-slate-400 hover:text-white"
             }`}
           >
             <Printer className="w-4 h-4" />
@@ -206,11 +206,11 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
 
       {/* VIEW 1: PARCOURSUP DRAFT */}
       {activeView === "parcoursup" && (
-        <div className="bg-slate-900/85 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        <div className="bg-[#0A1326]/85 border border-[#004F9F]/25 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#004F9F]/30 pb-3">
             <div>
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                <span className="w-2 h-2 rounded-full bg-[#38BDF8]" />
                 Projet de Formation Motivé — Concours Advance & IPSA
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -219,7 +219,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
             </div>
 
             {/* Length selector */}
-            <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+            <div className="flex items-center gap-1 bg-[#060D1E] p-1 rounded-xl border border-[#004F9F]/30 text-xs">
               <button
                 onClick={() => {
                   setParcoursupLengthMode("standard1500");
@@ -230,7 +230,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
                 }}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                   parcoursupLengthMode === "standard1500"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#004F9F] text-white"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
@@ -246,7 +246,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
                 }}
                 className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
                   parcoursupLengthMode === "detailed"
-                    ? "bg-blue-600 text-white"
+                    ? "bg-[#004F9F] text-white"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
@@ -266,7 +266,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
                   parcoursupDraft: e.target.value,
                 })
               }
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-400/50 leading-relaxed font-sans"
+              className="w-full bg-[#060D1E] border border-[#004F9F]/30 rounded-xl p-3.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-[#00A3E0]/50 leading-relaxed font-sans"
             />
 
             <div className="flex items-center justify-between text-xs text-slate-400 px-1">
@@ -276,7 +276,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
                   className={
                     summary.parcoursupDraft.length > 1500 && parcoursupLengthMode === "standard1500"
                       ? "text-rose-400 font-bold"
-                      : "text-cyan-400"
+                      : "text-[#38BDF8]"
                   }
                 >
                   {summary.parcoursupDraft.length}
@@ -290,12 +290,12 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
           </div>
 
           {/* Quick Action buttons */}
-          <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-800">
+          <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-[#004F9F]/30">
             <button
               onClick={() =>
                 copyToClipboard(summary.parcoursupDraft, "parcoursup")
               }
-              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-md active:scale-95"
+              className="ipsa-gradient-btn flex items-center gap-1.5 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-md active:scale-95"
             >
               {copiedType === "parcoursup" ? (
                 <>
@@ -312,7 +312,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
 
             <button
               onClick={downloadMarkdown}
-              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium px-3 py-2 rounded-xl transition-all border border-slate-700"
+              className="flex items-center gap-1.5 bg-[#0A1326] hover:bg-[#004F9F]/30 text-slate-200 text-xs font-medium px-3 py-2 rounded-xl transition-all border border-[#004F9F]/40"
             >
               <Download className="w-4 h-4" />
               <span>Exporter en Markdown</span>
@@ -323,11 +323,11 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
 
       {/* VIEW 2: FAMILY DEBRIEF */}
       {activeView === "family" && (
-        <div className="bg-slate-900/85 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        <div className="bg-[#0A1326]/85 border border-[#004F9F]/25 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#004F9F]/30 pb-3">
             <div>
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Users className="w-4 h-4 text-indigo-400" />
+                <Users className="w-4 h-4 text-[#00A3E0]" />
                 Débriefing clair pour vos parents & vos proches
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -345,10 +345,10 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
                 familyDebriefDraft: e.target.value,
               })
             }
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-cyan-400/50 leading-relaxed font-sans"
+            className="w-full bg-[#060D1E] border border-[#004F9F]/30 rounded-xl p-3.5 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-[#00A3E0]/50 leading-relaxed font-sans"
           />
 
-          <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-800">
+          <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-[#004F9F]/30">
             <button
               onClick={() =>
                 shareViaWhatsApp(summary.familyDebriefDraft)
@@ -361,7 +361,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
 
             <button
               onClick={() => copyToClipboard(summary.familyDebriefDraft, "family")}
-              className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-md active:scale-95"
+              className="ipsa-gradient-btn flex items-center gap-1.5 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-md active:scale-95"
             >
               {copiedType === "family" ? (
                 <>
@@ -381,11 +381,11 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
 
       {/* VIEW 3: PRINTABLE A4 REPORT */}
       {activeView === "print" && (
-        <div className="bg-slate-900/85 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="bg-[#0A1326]/85 border border-[#004F9F]/25 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[#004F9F]/30 pb-3">
             <div>
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Printer className="w-4 h-4 text-cyan-400" />
+                <Printer className="w-4 h-4 text-[#38BDF8]" />
                 Dossier de Visite Complet A4
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -395,7 +395,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
 
             <button
               onClick={() => window.print()}
-              className="flex items-center gap-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-md active:scale-95"
+              className="ipsa-gradient-btn flex items-center gap-1.5 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-md active:scale-95"
             >
               <Printer className="w-4 h-4" />
               <span>Imprimer / Sauvegarder en PDF</span>
@@ -405,9 +405,9 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
           {/* Printable White Sheet Preview */}
           <div className="bg-white text-slate-900 rounded-xl p-6 sm:p-8 shadow-inner font-sans space-y-6 border border-slate-300">
             {/* Document Header */}
-            <div className="border-b-2 border-slate-900 pb-4 flex items-start justify-between gap-4">
+            <div className="border-b-2 border-[#004F9F] pb-4 flex items-start justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-blue-700 uppercase tracking-widest">
+                <span className="text-xs font-bold text-[#004F9F] uppercase tracking-widest">
                   COMPTE RENDU OFFICIEL DE VISITE JPO
                 </span>
                 <h1 className="text-2xl font-black tracking-tight text-slate-900 mt-0.5">
@@ -435,7 +435,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
                         candidateName: e.target.value,
                       });
                     }}
-                    className="border-b border-slate-300 text-xs px-1 py-0.5 focus:outline-none focus:border-blue-600 w-32"
+                    className="border-b border-slate-300 text-xs px-1 py-0.5 focus:outline-none focus:border-[#004F9F] w-32"
                   />
                 </div>
               </div>
@@ -449,7 +449,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
               </div>
               <div>
                 <p className="text-[10px] text-slate-500 font-bold uppercase">Questions Répondues</p>
-                <p className="text-xl font-black text-blue-700">
+                <p className="text-xl font-black text-[#004F9F]">
                   {state.tasks.filter((t) => t.completed).length} / {state.tasks.length}
                 </p>
               </div>
@@ -480,7 +480,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
                       <td className="py-2 px-2.5 text-slate-600">
                         {n.contactName ? `${n.contactName} (${n.contactRole || ""})` : "Étudiants"}
                       </td>
-                      <td className="py-2 px-2.5 text-center font-bold text-blue-700">{n.rating}/5</td>
+                      <td className="py-2 px-2.5 text-center font-bold text-[#004F9F]">{n.rating}/5</td>
                       <td className="py-2 px-2.5 text-slate-700">
                         {n.pros.length > 0 ? n.pros.join(", ") : n.content.slice(0, 80) + "..."}
                       </td>
@@ -502,7 +502,7 @@ export default function SummaryTab({ state, onUpdateSummary }: SummaryTabProps) 
                   .map((t) => (
                     <div key={t.id} className="bg-slate-50 p-2.5 rounded border border-slate-200">
                       <p className="font-bold text-slate-900">• {t.question}</p>
-                      <p className="text-slate-700 mt-1 pl-3 border-l-2 border-blue-600">{t.answer}</p>
+                      <p className="text-slate-700 mt-1 pl-3 border-l-2 border-[#004F9F]">{t.answer}</p>
                     </div>
                   ))}
               </div>

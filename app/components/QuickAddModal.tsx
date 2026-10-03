@@ -97,30 +97,30 @@ export default function QuickAddModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-slate-900 border border-slate-800 rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 shadow-2xl space-y-4 text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-[#060D1E]/85 backdrop-blur-sm animate-in fade-in">
+      <div className="bg-[#0A1326] border border-[#00A3E0]/25 rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 shadow-2xl shadow-[#004F9F]/20 space-y-4 text-slate-100">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <div className="flex items-center justify-between border-b border-[#004F9F]/30 pb-2.5">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <Sparkles className="w-4 h-4 text-[#38BDF8]" />
             <h2 className="text-sm font-bold text-white">Saisie Rapide</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white"
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#004F9F]/30 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab selection */}
-        <div className="grid grid-cols-3 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+        <div className="grid grid-cols-3 gap-1 bg-[#060D1E] p-1 rounded-xl border border-[#004F9F]/30 text-xs">
           <button
             onClick={() => setActiveTab("note")}
             className={`py-1.5 rounded-lg font-medium transition-all ${
               activeTab === "note"
-                ? "bg-blue-600 text-white font-semibold"
-                : "text-slate-400"
+                ? "bg-[#004F9F] text-white font-semibold shadow-sm"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             Avis Stand
@@ -129,8 +129,8 @@ export default function QuickAddModal({
             onClick={() => setActiveTab("task")}
             className={`py-1.5 rounded-lg font-medium transition-all ${
               activeTab === "task"
-                ? "bg-blue-600 text-white font-semibold"
-                : "text-slate-400"
+                ? "bg-[#004F9F] text-white font-semibold shadow-sm"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             Question
@@ -139,8 +139,8 @@ export default function QuickAddModal({
             onClick={() => setActiveTab("event")}
             className={`py-1.5 rounded-lg font-medium transition-all ${
               activeTab === "event"
-                ? "bg-blue-600 text-white font-semibold"
-                : "text-slate-400"
+                ? "bg-[#004F9F] text-white font-semibold shadow-sm"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             Horaire
@@ -161,7 +161,7 @@ export default function QuickAddModal({
                 placeholder="Ex: Simulateur A320, AeroIPSA, BDE..."
                 value={standName}
                 onChange={(e) => setStandName(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               />
             </div>
 
@@ -201,13 +201,13 @@ export default function QuickAddModal({
                 placeholder="Ex: Super cockpit, accessible en 1ère année..."
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 rounded-xl text-xs shadow-md transition-all active:scale-95"
+              className="w-full ipsa-gradient-btn text-white font-bold py-2 rounded-xl text-xs shadow-md transition-all active:scale-95"
             >
               Enregistrer la note
             </button>
@@ -228,13 +228,13 @@ export default function QuickAddModal({
                 placeholder="Ex: Demander le taux de passage en Aéro 2..."
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 rounded-xl text-xs shadow-md transition-all active:scale-95"
+              className="w-full ipsa-gradient-btn text-white font-bold py-2 rounded-xl text-xs shadow-md transition-all active:scale-95"
             >
               Ajouter à la checklist
             </button>
@@ -255,7 +255,7 @@ export default function QuickAddModal({
                 placeholder="Ex: Conférence Advance..."
                 value={eventTitle}
                 onChange={(e) => setEventTitle(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               />
             </div>
 
@@ -268,7 +268,7 @@ export default function QuickAddModal({
                   type="time"
                   value={eventTime}
                   onChange={(e) => setEventTime(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
                 />
               </div>
               <div>
@@ -280,14 +280,14 @@ export default function QuickAddModal({
                   placeholder="Ex: Amphi A"
                   value={eventLocation}
                   onChange={(e) => setEventLocation(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2 rounded-xl text-xs shadow-md transition-all active:scale-95"
+              className="w-full ipsa-gradient-btn text-white font-bold py-2 rounded-xl text-xs shadow-md transition-all active:scale-95"
             >
               Ajouter à l&apos;agenda
             </button>

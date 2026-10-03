@@ -31,11 +31,11 @@ export default function Header({
   const notesCount = state.notes.length;
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800 text-white transition-all shadow-md">
+    <header className="sticky top-0 z-40 bg-[#060D1E]/92 backdrop-blur-md border-b border-[#00A3E0]/25 text-white transition-all shadow-lg shadow-black/40">
       <div className="max-w-5xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3">
-        {/* Brand / Title */}
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="relative flex items-center justify-center h-10 w-13 sm:w-16 rounded-xl bg-white p-1 shadow-md shadow-blue-500/20 shrink-0 border border-slate-700/60 overflow-hidden">
+        {/* Brand / Logo IPSA */}
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="relative flex items-center justify-center h-10 w-14 sm:w-16 rounded-xl bg-white p-1 shadow-md shadow-[#00A3E0]/20 shrink-0 border border-[#00A3E0]/40 overflow-hidden">
             <Image
               src="/ipsa-logo.png"
               alt="Logo IPSA"
@@ -45,24 +45,24 @@ export default function Header({
               priority
             />
             <span className="absolute -bottom-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-slate-950"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00A3E0] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#00A3E0] border border-[#060D1E]"></span>
             </span>
           </div>
 
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <h1 className="font-extrabold text-sm sm:text-base tracking-tight truncate bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+              <h1 className="font-extrabold text-sm sm:text-base tracking-tight truncate bg-gradient-to-r from-white via-sky-100 to-[#38BDF8] bg-clip-text text-transparent">
                 IPSA Lyon — Compagnon JPO
               </h1>
-              <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-blue-500/20 text-cyan-300 border border-blue-500/30">
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#004F9F]/35 text-[#38BDF8] border border-[#00A3E0]/40 shadow-sm">
                 Parcoursup
               </span>
             </div>
-            <p className="text-xs text-slate-400 truncate flex items-center gap-1">
-              <span>Campus Lyon (Jean Novel)</span>
+            <p className="text-xs text-slate-400 truncate flex items-center gap-1.5">
+              <span className="text-sky-200/80 font-medium">Campus Lyon (Jean Novel)</span>
               <span>•</span>
-              <span className="text-slate-400 font-medium">
+              <span className="text-slate-400">
                 {completedTasks}/{totalTasks} questions • {notesCount} fiches
               </span>
             </p>
@@ -81,12 +81,12 @@ export default function Header({
                 ? "Synchronisation en cours..."
                 : "Mode Local / Hors-ligne (Cliquer pour synchroniser)"
             }
-            className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border transition-all ${
+            className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-xl border transition-all ${
               syncStatus === "synced"
-                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
+                ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/35 hover:bg-emerald-500/25"
                 : syncStatus === "syncing"
-                ? "bg-blue-500/10 text-blue-400 border-blue-500/30 animate-pulse"
-                : "bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20"
+                ? "bg-[#004F9F]/30 text-[#38BDF8] border-[#00A3E0]/40 animate-pulse"
+                : "bg-amber-500/15 text-amber-300 border-amber-500/35 hover:bg-amber-500/25"
             }`}
           >
             {syncStatus === "synced" ? (
@@ -96,7 +96,7 @@ export default function Header({
             ) : (
               <CloudOff className="w-3.5 h-3.5" />
             )}
-            <span className="hidden sm:inline">
+            <span className="hidden sm:inline font-medium">
               {syncStatus === "synced"
                 ? "Cloud Supabase"
                 : syncStatus === "syncing"
@@ -108,7 +108,7 @@ export default function Header({
           {/* Quick Summary Generator Button */}
           <button
             onClick={onOpenSummary}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-lg shadow-md shadow-blue-500/25 transition-all active:scale-95 border border-blue-400/30"
+            className="flex items-center gap-1.5 ipsa-gradient-btn text-white text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-xl transition-all active:scale-95"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
             <span className="hidden xs:inline">Compte Rendu</span>
@@ -119,9 +119,9 @@ export default function Header({
           <button
             onClick={onOpenSettings}
             title="Paramètres & Accès Campus"
-            className="p-1.5 sm:p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+            className="p-2 rounded-xl bg-[#0A1326] hover:bg-[#112140] text-slate-300 hover:text-white border border-[#00A3E0]/25 transition-colors"
           >
-            <SettingsIcon className="w-4 h-4" />
+            <SettingsIcon className="w-4 h-4 text-sky-400" />
           </button>
         </div>
       </div>

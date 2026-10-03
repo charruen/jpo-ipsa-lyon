@@ -2,17 +2,21 @@
 
 @layer base {
   :root {
-    --bg-main: #020617;
-    --bg-card: #0f172a;
-    --bg-card-hover: #1e293b;
-    --border-color: #1e293b;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --accent-blue: #2563eb;
-    --accent-cyan: #06b6d4;
-    --accent-amber: #f59e0b;
-    --accent-emerald: #10b981;
-    --accent-rose: #f43f5e;
+    /* Couleurs Officielles de l'Identité IPSA */
+    --ipsa-navy: #004F9F;
+    --ipsa-navy-dark: #003366;
+    --ipsa-cyan: #00A3E0;
+    --ipsa-cyan-bright: #38BDF8;
+    --ipsa-cyan-glow: rgba(0, 163, 224, 0.25);
+    
+    /* Fond Aérospatial Sombre & Cartes */
+    --bg-main: #040914;
+    --bg-card: #0A1326;
+    --bg-card-hover: #101D38;
+    --border-color: rgba(0, 163, 224, 0.2);
+    --border-color-subtle: rgba(255, 255, 255, 0.08);
+    --text-main: #F8FAFC;
+    --text-muted: #94A3B8;
   }
 
   body {
@@ -21,21 +25,67 @@
     font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     min-height: 100vh;
     margin: 0;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 79, 159, 0.35), transparent 70%),
+      radial-gradient(circle at 100% 30%, rgba(0, 163, 224, 0.12), transparent 50%),
+      radial-gradient(circle at 0% 70%, rgba(0, 79, 159, 0.15), transparent 50%);
+    background-attachment: fixed;
   }
 }
 
-/* Custom Utilities */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Utilitaires Graphiques IPSA */
+.ipsa-glass {
+  background: rgba(10, 19, 38, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 163, 224, 0.22);
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+.ipsa-glass-hover:hover {
+  background: rgba(16, 29, 56, 0.9);
+  border-color: rgba(0, 163, 224, 0.45);
+  box-shadow: 0 4px 20px -2px rgba(0, 163, 224, 0.2);
+}
+
+.ipsa-card {
+  background: linear-gradient(180deg, rgba(14, 25, 48, 0.9) 0%, rgba(8, 15, 30, 0.95) 100%);
+  border: 1px solid rgba(0, 163, 224, 0.18);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.ipsa-gradient-btn {
+  background: linear-gradient(135deg, #004F9F 0%, #0066CC 50%, #00A3E0 100%);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 163, 224, 0.3);
+}
+
+.ipsa-gradient-btn:hover {
+  background: linear-gradient(135deg, #005BB7 0%, #0077EE 50%, #22C55E 100%);
+  box-shadow: 0 6px 20px rgba(0, 163, 224, 0.45);
+}
+
+.ipsa-gradient-text {
+  background: linear-gradient(135deg, #FFFFFF 0%, #BAE6FD 50%, #00A3E0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.ipsa-glow-cyan {
+  box-shadow: 0 0 25px rgba(0, 163, 224, 0.25);
+}
+
+.ipsa-orbit-line {
+  position: relative;
+}
+.ipsa-orbit-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 19px;
+  width: 2px;
+  background: linear-gradient(180deg, #00A3E0 0%, #004F9F 50%, transparent 100%);
+  opacity: 0.35;
 }
 
 .pb-safe {
@@ -50,7 +100,7 @@
   scrollbar-width: none;
 }
 
-/* Print Styles optimized for A4 Document */
+/* Print Styles optimisés A4 avec En-tête IPSA */
 @media print {
   @page {
     size: A4 portrait;
@@ -59,6 +109,7 @@
 
   body {
     background: #ffffff !important;
+    background-image: none !important;
     color: #000000 !important;
     font-size: 10pt !important;
   }
@@ -85,7 +136,8 @@
   }
 
   th {
-    background-color: #f1f5f9 !important;
+    background-color: #f0f7ff !important;
+    color: #004F9F !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     font-size: 8pt !important;

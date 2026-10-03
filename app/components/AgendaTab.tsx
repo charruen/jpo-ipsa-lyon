@@ -49,9 +49,9 @@ export default function AgendaTab({
       case "transport":
         return <Train className="w-4 h-4 text-emerald-400" />;
       case "conference":
-        return <School className="w-4 h-4 text-blue-400" />;
+        return <School className="w-4 h-4 text-[#38BDF8]" />;
       case "labo":
-        return <Wrench className="w-4 h-4 text-cyan-400" />;
+        return <Wrench className="w-4 h-4 text-[#00A3E0]" />;
       case "assos":
         return <Users className="w-4 h-4 text-amber-400" />;
       case "admissions":
@@ -123,11 +123,11 @@ export default function AgendaTab({
   return (
     <div className="space-y-4 pb-24">
       {/* Top Banner / Filter */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-sm backdrop-blur">
+      <div className="bg-[#0A1326]/90 border border-[#00A3E0]/20 rounded-2xl p-4 shadow-sm backdrop-blur">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#38BDF8] animate-ping" />
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 Programme & Déplacements
               </h2>
@@ -139,7 +139,7 @@ export default function AgendaTab({
 
           <button
             onClick={() => setIsAdding(!isAdding)}
-            className="flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all shadow-md shadow-blue-500/20 active:scale-95 shrink-0"
+            className="ipsa-gradient-btn flex items-center justify-center gap-1.5 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all active:scale-95 shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span>Ajouter un créneau</span>
@@ -161,8 +161,8 @@ export default function AgendaTab({
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all border ${
                 selectedCategory === cat.id
-                  ? "bg-cyan-500/15 border-cyan-500/40 text-cyan-300"
-                  : "bg-slate-800/60 border-slate-700/60 text-slate-400 hover:text-slate-200"
+                  ? "bg-[#00A3E0]/15 border-[#00A3E0]/40 text-[#38BDF8]"
+                  : "bg-[#0A1326]/60 border-[#004F9F]/30 text-slate-400 hover:text-slate-200"
               }`}
             >
               {cat.label}
@@ -175,11 +175,11 @@ export default function AgendaTab({
       {isAdding && (
         <form
           onSubmit={handleCreateSubmit}
-          className="bg-slate-900 border border-cyan-500/30 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3.5 animate-in fade-in slide-in-from-top-3"
+          className="bg-[#0A1326] border border-[#00A3E0]/30 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3.5 animate-in fade-in slide-in-from-top-3"
         >
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div className="flex items-center justify-between border-b border-[#004F9F]/30 pb-2">
             <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <Sparkles className="w-4 h-4 text-[#38BDF8]" />
               Nouveau créneau horaire
             </h3>
             <button
@@ -202,7 +202,7 @@ export default function AgendaTab({
                 placeholder="Ex: Démo Soufflerie ou Discussion Prépas"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               />
             </div>
 
@@ -213,7 +213,7 @@ export default function AgendaTab({
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as EventCategory)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               >
                 <option value="labo">Simulateur & Labo</option>
                 <option value="conference">Conférence</option>
@@ -235,7 +235,7 @@ export default function AgendaTab({
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               />
             </div>
             <div>
@@ -246,7 +246,7 @@ export default function AgendaTab({
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               />
             </div>
             <div className="col-span-2 sm:col-span-1">
@@ -258,7 +258,7 @@ export default function AgendaTab({
                 placeholder="Ex: Salle B102, Hall A..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+                className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
               />
             </div>
           </div>
@@ -272,7 +272,7 @@ export default function AgendaTab({
               placeholder="Ex: Ne pas oublier de demander pour le BIA..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+              className="w-full bg-[#060D1E] border border-[#004F9F]/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00A3E0]"
             />
           </div>
 
@@ -282,14 +282,14 @@ export default function AgendaTab({
                 type="checkbox"
                 checked={highlight}
                 onChange={(e) => setHighlight(e.target.checked)}
-                className="rounded border-slate-700 text-cyan-500 focus:ring-0"
+                className="rounded border-[#004F9F]/60 text-[#00A3E0] focus:ring-0"
               />
               <span>Événement prioritaire (mettre en valeur)</span>
             </label>
 
             <button
               type="submit"
-              className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-md active:scale-95"
+              className="ipsa-gradient-btn text-white font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-md active:scale-95"
             >
               Enregistrer
             </button>
@@ -300,7 +300,7 @@ export default function AgendaTab({
       {/* Timeline items */}
       <div className="space-y-3">
         {filteredEvents.length === 0 ? (
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 text-center text-slate-400">
+          <div className="bg-[#0A1326]/60 border border-[#004F9F]/20 rounded-2xl p-8 text-center text-slate-400">
             <Clock className="w-8 h-8 mx-auto text-slate-600 mb-2" />
             <p className="text-sm">Aucun événement dans cette catégorie.</p>
           </div>
@@ -312,14 +312,14 @@ export default function AgendaTab({
             return (
               <div
                 key={item.id}
-                className={`relative group bg-slate-900/80 border transition-all rounded-2xl p-3.5 sm:p-4 shadow-sm hover:border-slate-700 ${
+                className={`relative group bg-[#0A1326]/80 border transition-all rounded-2xl p-3.5 sm:p-4 shadow-sm ${
                   isOngoing
-                    ? "border-cyan-500 bg-cyan-950/20 shadow-cyan-500/10 shadow-lg ring-1 ring-cyan-500/50"
+                    ? "border-[#00A3E0] bg-[#004F9F]/10 shadow-[#00A3E0]/15 shadow-lg ring-1 ring-[#00A3E0]/40"
                     : isCompleted
-                    ? "border-slate-800/80 opacity-75 bg-slate-950/40"
+                    ? "border-[#004F9F]/20 opacity-75 bg-[#060D1E]/40"
                     : item.highlight
-                    ? "border-blue-500/40 bg-gradient-to-r from-slate-900 via-slate-900 to-blue-950/20"
-                    : "border-slate-800"
+                    ? "border-[#004F9F]/50 bg-gradient-to-r from-[#0A1326] via-[#0A1326] to-[#004F9F]/15"
+                    : "border-[#004F9F]/25 hover:border-[#00A3E0]/35"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -333,7 +333,7 @@ export default function AgendaTab({
                       {isCompleted ? (
                         <CheckCircle2 className="w-6 h-6 text-emerald-400 fill-emerald-500/10" />
                       ) : isOngoing ? (
-                        <PlayCircle className="w-6 h-6 text-cyan-400 fill-cyan-500/20 animate-pulse" />
+                        <PlayCircle className="w-6 h-6 text-[#38BDF8] fill-[#00A3E0]/20 animate-pulse" />
                       ) : (
                         <Circle className="w-6 h-6 text-slate-600 hover:text-slate-400" />
                       )}
@@ -341,17 +341,17 @@ export default function AgendaTab({
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-lg bg-slate-800 text-cyan-300 border border-slate-700">
+                        <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-lg bg-[#004F9F]/30 text-[#38BDF8] border border-[#00A3E0]/30">
                           {item.startTime} - {item.endTime}
                         </span>
 
-                        <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700">
+                        <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg bg-[#0A1326] text-slate-300 border border-[#004F9F]/30">
                           {getCategoryIcon(item.category)}
                           <span className="truncate">{getCategoryLabel(item.category)}</span>
                         </span>
 
                         {isOngoing && (
-                          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 animate-pulse">
+                          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#00A3E0]/20 text-[#38BDF8] border border-[#00A3E0]/40 animate-pulse">
                             En cours
                           </span>
                         )}
@@ -381,7 +381,7 @@ export default function AgendaTab({
                       )}
 
                       {item.description && (
-                        <p className="text-xs text-slate-300 mt-2 leading-relaxed bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80">
+                        <p className="text-xs text-slate-300 mt-2 leading-relaxed bg-[#060D1E]/60 p-2.5 rounded-xl border border-[#004F9F]/20">
                           {item.description}
                         </p>
                       )}
@@ -398,7 +398,7 @@ export default function AgendaTab({
                               notes: e.target.value,
                             })
                           }
-                          className="w-full bg-slate-950/80 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/50"
+                          className="w-full bg-[#060D1E]/80 border border-[#004F9F]/25 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-[#00A3E0]/50"
                         />
                       </div>
                     </div>
